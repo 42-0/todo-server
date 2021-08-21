@@ -21,8 +21,8 @@ export class UsersController {
 
   @ApiOperation({ summary: 'me' })
   @Get('me')
-  findById(@Req() req): Promise<Users> {
-    return this.usersService.findById(req.user.id);
+  findById(@Req() req) {
+    return this.usersService.getUserInfo(req.user.id);
   }
 
   @Post()

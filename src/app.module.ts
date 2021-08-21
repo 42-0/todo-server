@@ -36,10 +36,10 @@ import { TimeoutInterceptor } from './interceptor/timeout.interceptor';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ErrorsInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: ErrorsInterceptor,
+    // },
     {
       provide: APP_INTERCEPTOR,
       useClass: TimeoutInterceptor,

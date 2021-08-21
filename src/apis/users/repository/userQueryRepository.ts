@@ -8,16 +8,15 @@ export class UserQueryRepository {
 
   async findById(id: number) {
     return await this.prisma.users.findUnique({
-      // include: {
-      //   company_info: {
-      //     select: {
-      //       type: true,
-      //       status: true,
-      //     },
-      //   },
-      // },
       where: {
         id: id,
+      },
+      select: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        profileImage: true,
+        uuid: true,
       },
     });
   }

@@ -9,6 +9,8 @@ import {
   UseGuards,
   Req,
   Res,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/decorators/public.decorator';
@@ -25,6 +27,7 @@ export class AuthController {
 
   @ApiOperation({ summary: '로그인' })
   @Post('login')
+  @HttpCode(200)
   async login(@Body() loginRequest: LoginRequest) {
     return this.authService.login(loginRequest);
   }

@@ -3,11 +3,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Users } from '@prisma/client';
 import { UserQueryRepository } from './repository/userQueryRepository';
-// import argon2 from 'argon2';
-const argon2 = require('argon2');
+import argon2 from 'argon2';
+// const argon2 = require('argon2');
 
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
 import UUIDParse from 'uuid-parse';
+// const UUIDParse = require('uuid-parse');
 
 import { SignupRequest } from '../auth/dto/request/signup.request';
 
@@ -15,9 +16,12 @@ import { SignupRequest } from '../auth/dto/request/signup.request';
 export class UsersService {
   constructor(private readonly userQueryRepository: UserQueryRepository) {}
 
-  async findById(id: number) {
-    const user: Users = await this.userQueryRepository.findById(id);
-    return delete user.password && user;
+  async getUserInfo(id: number) {
+    const user = await this.userQueryRepository.findById(id);
+    return {
+      ...user,
+      uuid: UUIDParse.unparse(user.uuid),
+    };
   }
 
   async login(email: string, password: string): Promise<Users> {
