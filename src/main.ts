@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { swaggerConfiguration } from './configs/swagger';
 
 const bootstrap = async () => {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: false });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -18,5 +18,6 @@ const bootstrap = async () => {
   }
 
   await app.listen(3500);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 };
 bootstrap();

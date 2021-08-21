@@ -6,14 +6,24 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Users } from '@prisma/client';
 
-@Controller('users')
+@ApiTags('유저')
+@Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @ApiOperation({ summary: 'me' })
+  @Get('me')
+  findById(@Req() req): Promise<Users> {
+    return this.usersService.findById(req.user.id);
+  }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {

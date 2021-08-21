@@ -8,22 +8,23 @@ datasource db {
 }
 
 model Todos {
-  id        BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
   title     String    @db.VarChar(255)
   content   String?   @db.Text
   published Boolean   @default(false)
-  userId    BigInt    @db.UnsignedBigInt
+  userId    Int    @db.UnsignedInt
   checkedAt DateTime? @db.Timestamp(3)
   createdAt DateTime  @default(now()) @db.Timestamp(3)
   updatedAt DateTime? @db.Timestamp(3)
   deletedAt DateTime? @db.Timestamp(3)
+  isChecked Boolean?  @default(false)
   Users     Users     @relation(fields: [userId], references: [id])
 
   @@index([userId], name: "userId")
 }
 
 model Users {
-  id           BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
   firstName    String?   @db.VarChar(255)
   lastName     String?   @db.VarChar(255)
   email        String    @unique @db.VarChar(255)
@@ -32,7 +33,6 @@ model Users {
   profileImage String?   @db.VarChar(128)
   provider     Provider?
   uuid         Bytes     @db.Binary(16)
-  isChecked    Boolean?
   createdAt    DateTime  @default(now()) @db.Timestamp(3)
   updatedAt    DateTime? @db.Timestamp(3)
   deletedAt    DateTime? @db.Timestamp(3)
