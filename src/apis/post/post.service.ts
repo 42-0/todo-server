@@ -42,23 +42,20 @@ export class PostService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
     return false;
   };
 
   async update(req, id, updatePostRequest: UpdatePostRequest) {
     const jwtInfo: JwtInfo = req.user;
-    if (await this.postValidator(id, jwtInfo)) {
-      return;
-    }
+    await this.postValidator(id, jwtInfo);
     await this.postQueryRepository.update(jwtInfo, id, updatePostRequest);
     return HttpStatus.OK;
   }
 
   async remove(req, id: number) {
     const jwtInfo: JwtInfo = req.user;
-    if (await this.postValidator(id, jwtInfo)) {
-      return;
-    }
+    await this.postValidator(id, jwtInfo);
     await this.postQueryRepository.delete(jwtInfo, id);
     return HttpStatus.OK;
   }
