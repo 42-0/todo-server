@@ -31,7 +31,7 @@ export class PostService {
     return this.postQueryRepository.findById(id);
   }
 
-  postValidator = async (id: number, jwtInfo: JwtInfo): Promise<boolean> => {
+  postValidator = async (id: number, jwtInfo: JwtInfo) => {
     const post = await this.postQueryRepository.findByIdAll(id);
     if (jwtInfo.id !== post.createdId) {
       throw new HttpException('Author id not match.', HttpStatus.BAD_REQUEST);
@@ -42,8 +42,6 @@ export class PostService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    return false;
   };
 
   async update(req, id, updatePostRequest: UpdatePostRequest) {
