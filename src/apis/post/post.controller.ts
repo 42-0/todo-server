@@ -22,13 +22,13 @@ import { UpdatePostRequest } from './dto/request/update-post.request';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @ApiOperation({ summary: '게시판 등록' })
+  @ApiOperation({ summary: '게시물 등록' })
   @Post()
   create(@Req() req, @Body() createPostRequest: CreatePostRequest) {
     return this.postService.create(req, createPostRequest);
   }
 
-  @ApiOperation({ summary: '게시판 전체 조회' })
+  @ApiOperation({ summary: '게시물 전체 조회' })
   @Get()
   findAll(
     @Query('sequence', new DefaultValuePipe(0), ParseIntPipe) sequence: number,
@@ -38,11 +38,13 @@ export class PostController {
     return this.postService.findAll(findAllPostRequest);
   }
 
+  @ApiOperation({ summary: '게시물 개별 조회' })
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.postService.findOne(id);
   }
 
+  @ApiOperation({ summary: '게시물 수정' })
   @Patch(':id')
   update(
     @Req() req,
@@ -52,6 +54,7 @@ export class PostController {
     return this.postService.update(req, id, updatePostRequest);
   }
 
+  @ApiOperation({ summary: '게시물 삭제' })
   @Delete(':id')
   remove(@Req() req, @Param('id') id: number) {
     return this.postService.remove(req, id);

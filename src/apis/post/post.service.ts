@@ -31,19 +31,8 @@ export class PostService {
     return this.postQueryRepository.findById(id);
   }
 
-  // update(id: number, updatePostDto: UpdatePostDto) {
-  //   return `This action updates a #${id} post`;
-  // }
-  async update(req, id, updatePostRequest: UpdatePostRequest) {
-    const jwtInfo: JwtInfo = req.user;
-    await this.postQueryRepository.update(jwtInfo, id, updatePostRequest);
-    return HttpStatus.CREATED;
-  }
-
-  async remove(req, id: number) {
-    const jwtInfo: JwtInfo = req.user;
+  postValidator = async (id: number, jwtInfo: JwtInfo): Promise<boolean> => {
     const post = await this.postQueryRepository.findByIdAll(id);
-
     if (jwtInfo.id !== post.createdId) {
       throw new HttpException('Author id not match.', HttpStatus.BAD_REQUEST);
     }
@@ -53,7 +42,23 @@ export class PostService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    return false;
+  };
 
+  async update(req, id, updatePostRequest: UpdatePostRequest) {
+    const jwtInfo: JwtInfo = req.user;
+    if (await this.postValidator(id, jwtInfo)) {
+      return;
+    }
+    await this.postQueryRepository.update(jwtInfo, id, updatePostRequest);
+    return HttpStatus.OK;
+  }
+
+  async remove(req, id: number) {
+    const jwtInfo: JwtInfo = req.user;
+    if (await this.postValidator(id, jwtInfo)) {
+      return;
+    }
     await this.postQueryRepository.delete(jwtInfo, id);
     return HttpStatus.OK;
   }
