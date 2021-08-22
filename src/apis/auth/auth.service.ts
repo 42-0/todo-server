@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginRequest } from './dto/request/login.request';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import { SignupRequest } from './dto/request/signup.request';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private usersService: UsersService,
+    private usersService: UserService,
   ) {}
 
   createdJwt(id: number, email: string, role: string): string {

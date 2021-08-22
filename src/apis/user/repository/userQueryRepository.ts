@@ -7,11 +7,12 @@ export class UserQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findById(id: number) {
-    return await this.prisma.users.findUnique({
+    return await this.prisma.user.findUnique({
       where: {
         id: id,
       },
       select: {
+        id: true,
         firstName: true,
         lastName: true,
         email: true,
@@ -22,7 +23,7 @@ export class UserQueryRepository {
   }
 
   async findByEmail(email: string) {
-    return await this.prisma.users.findUnique({
+    return await this.prisma.user.findUnique({
       where: {
         email: email,
       },
@@ -30,13 +31,21 @@ export class UserQueryRepository {
   }
 
   async create(signupRequest: SignupRequest, hash, uuid) {
-    return await this.prisma.users.create({
+    return await this.prisma.user.create({
       data: {
         firstName: signupRequest.firstName,
         lastName: signupRequest.lastName,
         email: signupRequest.email,
         password: hash,
         uuid: uuid,
+      },
+    });
+  }
+
+  async findByIdAll(id: number) {
+    return await this.prisma.user.findUnique({
+      where: {
+        id: id,
       },
     });
   }

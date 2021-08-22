@@ -7,24 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Todos {
-  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+model Todo {
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
   title     String    @db.VarChar(255)
   content   String?   @db.Text
   published Boolean   @default(false)
-  userId    Int    @db.UnsignedInt
   checkedAt DateTime? @db.Timestamp(3)
   createdAt DateTime  @default(now()) @db.Timestamp(3)
   updatedAt DateTime? @db.Timestamp(3)
   deletedAt DateTime? @db.Timestamp(3)
   isChecked Boolean?  @default(false)
-  Users     Users     @relation(fields: [userId], references: [id])
+  userId    Int       @db.UnsignedInt
+  User      User      @relation(fields: [userId], references: [id])
 
   @@index([userId], name: "userId")
 }
 
-model Users {
-  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+model User {
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
   firstName    String?   @db.VarChar(255)
   lastName     String?   @db.VarChar(255)
   email        String    @unique @db.VarChar(255)
@@ -33,10 +33,20 @@ model Users {
   profileImage String?   @db.VarChar(128)
   provider     Provider?
   uuid         Bytes     @db.Binary(16)
-  createdAt    DateTime  @default(now()) @db.Timestamp(3)
-  updatedAt    DateTime? @db.Timestamp(3)
-  deletedAt    DateTime? @db.Timestamp(3)
-  Todos        Todos[]
+
+  createdAt DateTime  @default(now()) @db.Timestamp(3)
+  updatedAt DateTime? @db.Timestamp(3)
+  deletedAt DateTime? @db.Timestamp(3)
+  loginAt   DateTime? @db.Timestamp(3)
+
+  todos               Todo[]
+  createdUserPosts    Post[]    @relation("createdUserPost")
+  updatedUserPosts    Post[]    @relation("updatedUserPost")
+  deletedUserPosts    Post[]    @relation("deletedUserPost")
+  createdUserComments Comment[] @relation("createdUserComment")
+  updatedUserComments Comment[] @relation("updatedUserComment")
+  deletedUserComments Comment[] @relation("deletedUserComment")
+  likes               Like[]
 }
 
 enum Role {
@@ -49,4 +59,80 @@ enum Provider {
   FACEBOOK
   NAVER
   KAKAO
+}
+
+model Post {
+  id      Int     @id @default(autoincrement()) @db.UnsignedInt
+  title   String? @db.VarChar(255) // 제목
+  content String? @db.Text // 내용
+  views   Int     @default(0) @db.UnsignedInt // 조회수
+
+  createdId Int  @db.UnsignedInt // 작성자
+  updatedId Int? @db.UnsignedInt // 마지막 수정자
+  deletedId Int? @db.UnsignedInt // 삭제자
+
+  createdAt DateTime  @default(now()) @db.Timestamp(3)
+  updatedAt DateTime? @db.Timestamp(3)
+  deletedAt DateTime? @db.Timestamp(3)
+
+  createdUserPost User  @relation(name: "createdUserPost", fields: [createdId], references: [id])
+  updatedUserPost User? @relation(name: "updatedUserPost", fields: [updatedId], references: [id])
+  deletedUserPost User? @relation(name: "deletedUserPost", fields: [deletedId], references: [id])
+
+  comments Comment[]
+  likes    Like[]
+  log      Log?
+}
+
+model Comment {
+  id      Int     @id @default(autoincrement()) @db.UnsignedInt
+  content String? @db.Text // 내용
+
+  createdId Int  @db.UnsignedInt // 작성자
+  updatedId Int? @db.UnsignedInt // 마지막 수정자
+  deletedId Int? @db.UnsignedInt // 삭제자
+
+  createdAt DateTime  @default(now()) @db.Timestamp(3)
+  updatedAt DateTime? @db.Timestamp(3)
+  deletedAt DateTime? @db.Timestamp(3)
+
+  createdUserComment User  @relation(name: "createdUserComment", fields: [createdId], references: [id])
+  updatedUserComment User? @relation(name: "updatedUserComment", fields: [updatedId], references: [id])
+  deletedUserComment User? @relation(name: "deletedUserComment", fields: [deletedId], references: [id])
+
+  postId Int    @db.UnsignedInt
+  post   Post   @relation(fields: [postId], references: [id])
+  likes  Like[]
+  log    Log?
+}
+
+model Like {
+  id Int @id @default(autoincrement()) @db.UnsignedInt
+
+  createdAt DateTime  @default(now()) @db.Timestamp(3) // 좋아요 클릭 시간
+  deletedAt DateTime? @db.Timestamp(3) // 취소 클릭 시간
+
+  createdId   Int  @db.UnsignedInt // 좋아요 클릭 유저
+  createdUser User @relation(fields: [createdId], references: [id])
+
+  postId Int  @db.UnsignedInt
+  post   Post @relation(fields: [postId], references: [id])
+
+  commentId Int     @db.UnsignedInt
+  comment   Comment @relation(fields: [commentId], references: [id])
+}
+
+model Log {
+  id Int @id @default(autoincrement()) @db.UnsignedInt
+
+  ip        String?  @db.VarChar(128)
+  userAgent String?  @db.VarChar(256)
+  createdAt DateTime @default(now()) @db.Timestamp(3)
+
+  postId Int?  @db.UnsignedInt
+  post   Post? @relation(fields: [postId], references: [id])
+
+  commentId Int?     @db.UnsignedInt
+  comment   Comment? @relation(fields: [commentId], references: [id])
+
 }

@@ -1,7 +1,9 @@
-export interface jwtInfo {
+import { userRole } from '../../user/entities/user.entity';
+
+export interface JwtInfo {
   id: number;
   email: string;
-  roles: string;
+  roles: userRole;
   iat: number;
   exp: number;
 }

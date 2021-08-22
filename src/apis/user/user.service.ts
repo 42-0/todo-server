@@ -1,7 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Users } from '@prisma/client';
 import { UserQueryRepository } from './repository/userQueryRepository';
 import argon2 from 'argon2';
 // const argon2 = require('argon2');
@@ -13,7 +10,7 @@ import UUIDParse from 'uuid-parse';
 import { SignupRequest } from '../auth/dto/request/signup.request';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(private readonly userQueryRepository: UserQueryRepository) {}
 
   async getUserInfo(id: number) {
@@ -24,7 +21,7 @@ export class UsersService {
     };
   }
 
-  async login(email: string, password: string): Promise<Users> {
+  async login(email: string, password: string) {
     const user = await this.userQueryRepository.findByEmail(email);
 
     if (!user) {
@@ -40,7 +37,7 @@ export class UsersService {
       throw new HttpException('Incorrect password.', HttpStatus.BAD_REQUEST);
     }
 
-    // await this.prisma.users.update({
+    // await this.prisma.user.update({
     //   where: { id: user.id },
     //   data: {
     //     updatedAt: new Date(),
@@ -65,25 +62,5 @@ export class UsersService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-  }
-
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
-
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

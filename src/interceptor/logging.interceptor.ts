@@ -17,7 +17,7 @@ export class LoggingInterceptor implements NestInterceptor {
     const response = context.switchToHttp().getResponse();
 
     const method = request.method;
-    const host = request.headers.host;
+    const ip = request.get('x-forwarded-for');
     const userAgent = request.headers['user-agent'];
     const statusCode = response.statusCode;
 
@@ -25,9 +25,7 @@ export class LoggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(() => {
         this.logger.log(
-          `${method} ${statusCode} - ${userAgent} ${host} ${
-            Date.now() - now
-          }ms`,
+          `${method} ${statusCode} - ${userAgent} ${ip} ${Date.now() - now}ms`,
         );
       }),
     );

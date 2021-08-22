@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { jwtConstants } from '../constants';
-import { jwtInfo } from '../models/jwt.model';
+import { JwtInfo } from '../models/jwt.model';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // TODO : FORBIDDEN(403) => JWT 변조한 사용자
-  async validate(payload: jwtInfo) {
+  async validate(payload: JwtInfo) {
     if (!payload.id) {
       throw new HttpException('UNAUTHORIZED. no id.', HttpStatus.UNAUTHORIZED);
     }
