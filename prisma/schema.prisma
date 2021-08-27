@@ -61,11 +61,18 @@ enum Provider {
   KAKAO
 }
 
+enum Mode {
+  MARKDOWN
+  WYSIWYG
+}
+
 model Post {
-  id      Int     @id @default(autoincrement()) @db.UnsignedInt
-  title   String? @db.VarChar(255) // 제목
-  content String? @db.Text // 내용
-  views   Int     @default(0) @db.UnsignedInt // 조회수
+  id              Int     @id @default(autoincrement()) @db.UnsignedInt
+  title           String? @db.VarChar(255) // 제목
+  contentMarkdown String? @db.Text // 내용
+  contentWysiwyg  String? @db.Text // 내용
+  mode            Mode    @default(MARKDOWN)
+  views           Int     @default(0) @db.UnsignedInt // 조회수
 
   createdId Int  @db.UnsignedInt // 작성자
   updatedId Int? @db.UnsignedInt // 마지막 수정자

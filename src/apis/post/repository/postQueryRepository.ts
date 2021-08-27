@@ -61,7 +61,9 @@ export class PostQueryRepository {
     return await this.prisma.post.create({
       data: {
         title: createPostRequest.title,
-        content: createPostRequest.content,
+        mode: createPostRequest.mode,
+        contentMarkdown: createPostRequest.contentMarkdown,
+        contentWysiwyg: createPostRequest.contentWysiwyg,
         createdUserPost: { connect: { id: jwtInfo.id } },
       },
     });
@@ -90,7 +92,9 @@ export class PostQueryRepository {
       },
       data: {
         title: updatePostRequest.title,
-        content: updatePostRequest.content,
+        mode: updatePostRequest.mode,
+        contentMarkdown: updatePostRequest.contentMarkdown,
+        contentWysiwyg: updatePostRequest.contentWysiwyg,
         updatedUserPost: { connect: { id: jwtInfo.id } },
         updatedAt: dayjs().toISOString(),
       },
